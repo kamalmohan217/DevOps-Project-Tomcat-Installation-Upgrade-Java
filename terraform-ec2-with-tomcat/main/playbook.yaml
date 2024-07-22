@@ -1,0 +1,62 @@
+---
+- name: Playbook to install Tomcat Application Server
+  hosts: all
+  become: yes
+  tasks:
+  - name: Install Java-7
+    yum:
+      name: java-1.7*
+      state: present
+  - name: entry for JAVA_HOME and PATH
+    lineinfile:
+      dest: /etc/profile
+      line: |
+              
+              JAVA_HOME="/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.321-2.6.28.2.amzn2.0.2.x86_64"
+              PATH="$PATH:$JAVA_HOME/bin:/usr/local/bin"
+  - name: download tomcat from the given link
+    get_url:
+      url: https://repo1.maven.org/maven2/org/apache/tomcat/tomcat/8.5.99/tomcat-8.5.99.tar.gz
+      dest: /opt/
+  - name: unarchive tomcat tar file
+    unarchive:
+      src: /opt/tomcat-8.5.99.tar.gz
+      dest: /opt/
+      remote_src: yes
+  - name: change directory name
+    shell: mv /opt/apache-tomcat-8.5.99 /opt/apache-tomcat
+  - name: open port 8085 for tomcat
+    replace:
+      path: /opt/apache-tomcat/conf/server.xml
+      regexp: 'port="8080"'
+      replace: 'port="8085"' 
+  - name: create tomcat as a service
+    copy:
+      content: |
+        [Unit]
+        Description=Tomcat Service
+        Requires=network.target
+        After=network.target
+        [Service]
+        Type=forking
+        User=root
+        Environment="CATALINA_PID=/opt/apache-tomcat/logs/tomcat.pid"
+        Environment="CATALINA_BASE=/opt/apache-tomcat"
+        Environment="CATALINA_HOME=/opt/apache-tomcat"
+        Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+        ExecStart=/opt/apache-tomcat/bin/startup.sh
+        ExecStop=/opt/apache-tomcat/bin/shutdown.sh
+        Restart=on-abnormal
+        [Install]
+        WantedBy=multi-user.target 
+      dest: /etc/systemd/system/tomcat.service
+  - name: reload the SystemD for configurations to be read again
+    systemd:
+      daemon-reload: yes
+  - name: start tomcat and enable
+    systemd:
+      name: tomcat
+      state: started
+      enabled: true
+  - name: To check the status of tomcat service
+    shell: systemctl status tomcat 

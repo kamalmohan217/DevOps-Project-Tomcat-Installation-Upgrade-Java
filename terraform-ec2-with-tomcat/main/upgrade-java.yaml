@@ -1,0 +1,39 @@
+- name: upgrade java from java-7 to java-8
+  hosts: all
+  become: yes
+  tasks:
+  - name: Install java-8 on RHEL Machine
+    yum:
+      name: java-1.8*
+      state: present
+    register: rhel
+    when: ansible_os_family == "RedHat"
+  - name: check outcome for RHEL
+    debug:
+      msg: "{{rhel}}"
+  - name: Install java-8 on Ubuntu Machine
+    apt:
+      name: openjdk-8-jdk
+      state: present
+    register: ubuntu
+    when: ansible_os_family == "Debian"
+  - name: check outcome for ubuntu
+    debug:
+      msg: "{{ubuntu}}"            
+  - name: select desired java version
+    alternatives:
+      name: java
+      path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.412.b08-1.amzn2.0.1.x86_64/bin/java
+      link: /usr/bin/java
+  - name: update JAVA_HOME
+    lineinfile:
+      path: /etc/profile
+      regexp: '^JAVA_HOME='
+      line: 'JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.412.b08-1.amzn2.0.1.x86_64"'
+  - name: update PATH
+    lineinfile: 
+      path: /etc/profile
+      regexp: '^PATH='
+      line: 'PATH="$PATH:$JAVA_HOME/bin:/usr/local/bin"'
+  - name: Show Java Version
+    shell: java -version 
