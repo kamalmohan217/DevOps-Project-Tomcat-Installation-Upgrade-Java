@@ -20,7 +20,7 @@ Terraform is used for creation of Infrastructure while Ansible is a Configuratio
 ```
 The Ansible playbook **playbook.yaml** is used with terraform provisioner local-exec and **upgrade-java.yaml** playbook is used with ansible-playbook command while upgrading Java version. The ansible inventory file named as hosts has benn generated uding terraform. At present inventory file hosts is not present in the terraform script path **terraform-ec2-with-tomcat/main** but it will be created after successfully running the terraform script.  
 <br><br/>
-I have used a user named as ritesh and corresponding to that user a private key testkey.pem. However For your project you can use a user and corresponding to that user a private key. This user has been created using the user_data.sh, you need to provide relevant user and it's public key in the user_data.sh.
+I have used a user named as ritesh and corresponding to that user a private key testkey.pem. However For your project you can use a user and corresponding to that user a private key. This user has been created using the user_data.sh, you need to provide relevant user and it's public key in the user_data.sh. Provide permission of 600 to the file testkey.pem using the command **chmod 600 testkey.pem**
 <br><br/>
 Using **ssh-keygen** it is possible to create the private key (/home/user/.ssh/id_rsa) and public key (/home/user/.ssh/id_rsa.pub). For root user it is /root/.ssh/id_rsa and /root/.ssh/id_rsa.pub for private and public key respectively.
 <br><br/>
