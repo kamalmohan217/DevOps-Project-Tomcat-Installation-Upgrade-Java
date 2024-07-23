@@ -14,6 +14,10 @@ Using terraform script present in this repository I have created two EC2 Instanc
 This terraform script will generate an inventory file named as hosts for Ansible.
 ![image](https://github.com/user-attachments/assets/0591802b-634c-4fa1-9d49-fa3838680258)
 
+Ansible is installed on the server from where terraform command is run.
+![image](https://github.com/user-attachments/assets/11b98b22-23a2-4ca9-8e23-9e36c6ca0273)
+![image](https://github.com/user-attachments/assets/e121f1c8-b3b8-4edc-9e3b-dde9a6286125)
+
 At the time of Installation of tomcat I installed Java-7 but later I upgraded Java from Java-7 to Java-8 using Ansible.
 ```
 Terraform is used for creation of Infrastructure while Ansible is a Configuration management tool.
